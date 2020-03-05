@@ -1,67 +1,29 @@
 const typeInfoRegex = /^:([a-z])(\((.+)\))?/;
 
-const {webhook} =  require('../../src/process')
+let settings ={
+  id:'',
+  WebhookToken:'',
+  optional:{
+    username:'Translate error',
+    avatar:'https://imgur.com/sK2kaum.png',
+  }
+}
 
 var I18n = {
-  init({bundles, defaultCurrency}) {
-    I18n.bundles = bundles;
-    I18n.defaultCurrency = defaultCurrency;
-  },
-  
-  use (lang) {
-    I18n.lang = lang;
-    I18n.locale = I18n.bundles[lang].locale;
-    I18n.currency = I18n.bundles[lang].currency;
-  },
-  
-  translate(literals, ...values) {
-    let translationKey = I18n._buildKey(literals);
-    let translationString = I18n.bundles[I18n.lang].strings[translationKey];
-
-    if (translationString) {
-      let typeInfoForValues = literals.slice(1).map(I18n._extractTypeInfo);
-      let localizedValues = values.map((v, i) => I18n._localize(v, typeInfoForValues[i]));
-      return I18n._buildMessage(translationString, ...localizedValues);
-    }
-    const {MessageEmbed, WebhookClient } = require('discord.js');
-    const webhookClient = new WebhookClient(webhook.id, webhook.token);
-    const embed = new MessageEmbed()
-      .setTitle('Error translate')
-      .setAuthor("Noémie", webhook.url)
-      .setColor('#ee3f3f')
-      .setDescription(`Missing translation key in: \n${translationKey}`);
-    webhookClient.send( {
-      username: 'Noémie Translate error',
-      avatarURL: webhook.url,
-      embeds: [embed],
-    });
-   // console.log(`Missing translation key in ${module.parent.filename}:\n${translationKey}`)
-
-    return I18n._buildMessage(translationKey, ...values);
-  },
-  
-  bundleFromLocale (locale) {
-    for(const lang in I18n.bundles) {
-      const bundle = I18n.bundles[lang];
-      if(bundle.locale === locale)
-        return lang;
-    }
-    return null;
-  },
 
   _localizers: {
     s /*string*/: v => v.toLocaleString(I18n.locale),
     c /*currency*/: (v, currency) => (
-      v.toLocaleString(I18n.locale, {
-        style: 'currency',
-        currency: I18n.currency || I18n.defaultCurrency
-      })
+        v.toLocaleString(I18n.locale, {
+          style: 'currency',
+          currency: I18n.currency || I18n.defaultCurrency
+        })
     ),
     n /*number*/: (v, fractionalDigits) => (
-      v.toLocaleString(I18n.locale, {
-        minimumFractionDigits: fractionalDigits,
-        maximumFractionDigits: fractionalDigits
-      })
+        v.toLocaleString(I18n.locale, {
+          minimumFractionDigits: fractionalDigits,
+          maximumFractionDigits: fractionalDigits
+        })
     )
   },
 
@@ -90,10 +52,78 @@ var I18n = {
   // e.g. I18n._formatStrings('{0} {1}!', 'hello', 'world') == 'hello world!'
   _buildMessage(str, ...values) {
     return str.replace(/{(\d)}/g, (_, index) => values[Number(index)]);
-  }
+  },
+  _sendWebhook(translationKey){
+
+    if(!settings.id) return
+    if(!settings.WebhookToken) return
+
+    const {WebhookClient } = require('discord.js');
+    const webhookClient = new WebhookClient(settings.id, settings.WebhookToken);
+    webhookClient.send( {
+      username: settings.optional.username,
+      avatarURL: settings.optional.avatar,
+      embeds: [{
+        title:'Error Translate',
+        description:`Missing Translation\n${translationKey}`
+      }],
+    });
+
+  },
 };
 
-module.exports.init = I18n.init;
-module.exports.use = I18n.use;
-module.exports.translate = I18n.translate;
-module.exports.bundleFromLocale = I18n.bundleFromLocale;
+function initWebhook(Webhookid,WebhookToken,username,avatarURL){
+  if(!Webhookid) return console.log(`No ID Provided`)
+  if(!WebhookToken) return console.log(`No Webhook token provided`)
+
+  settings.id = Webhookid
+  settings.WebhookToken = WebhookToken
+  settings.optional.avatar = avatarURL ?  avatarURL:settings.optional.avatar
+  settings.optional.username = username ?  username:settings.optional.username
+
+}
+
+function init({bundles, defaultCurrency}) {
+  I18n.bundles = bundles;
+  I18n.defaultCurrency = defaultCurrency;
+}
+
+function use (lang) {
+  I18n.lang = lang;
+  I18n.locale = I18n.bundles[lang].locale;
+  I18n.currency = I18n.bundles[lang].currency;
+}
+
+function translate(literals, ...values) {
+  let translationKey = I18n._buildKey(literals);
+  let translationString = I18n.bundles[I18n.lang].strings[translationKey];
+
+  if (translationString) {
+    let typeInfoForValues = literals.slice(1).map(I18n._extractTypeInfo);
+    let localizedValues = values.map((v, i) => I18n._localize(v, typeInfoForValues[i]));
+    return I18n._buildMessage(translationString, ...localizedValues);
+  }else{
+    I18n._sendWebhook(translationKey)
+    console.log(`Missing translation key in ${module.parent.filename}:\n${translationKey}`)
+  }
+
+  return I18n._buildMessage(translationKey, ...values);
+}
+
+function bundleFromLocale (locale) {
+  for(const lang in I18n.bundles) {
+    const bundle = I18n.bundles[lang];
+    if(bundle.locale === locale)
+      return lang;
+  }
+  return null;
+}
+
+module.exports = {
+  init,
+  use,
+  translate,
+  initWebhook,
+  bundleFromLocale
+}
+
