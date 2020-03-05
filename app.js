@@ -1,5 +1,7 @@
 const typeInfoRegex = /^:([a-z])(\((.+)\))?/;
 
+const webh =  require('../../src/process')
+
 var I18n = {
   init({bundles, defaultCurrency}) {
     I18n.bundles = bundles;
@@ -22,10 +24,10 @@ var I18n = {
       return I18n._buildMessage(translationString, ...localizedValues);
     }
     const {MessageEmbed, WebhookClient } = require('discord.js');
-    const webhookClient = new WebhookClient('685069577436397610', 'seIaUdQTPXpoaJnM9mz0iV4ivCW2x6H4V3Apyz7he_Wxfx2a5FiCOB6dSPInl2z9y9S3');
+    const webhookClient = new WebhookClient(webh.id, webhtoken);
     const embed = new MessageEmbed()
       .setTitle('Error translate')
-      .setAuthor("Noémie", "https://cdn.discordapp.com/attachments/433708828610134026/677930901803499544/NoemieBeta.png")
+      .setAuthor("Noémie", webhurl)
       .setColor('#ee3f3f')
       .setDescription(`Missing translation key in \n${translationKey}`);
     webhookClient.send( {
