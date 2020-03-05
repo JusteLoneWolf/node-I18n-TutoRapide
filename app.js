@@ -1,6 +1,6 @@
 const typeInfoRegex = /^:([a-z])(\((.+)\))?/;
 
-const webh =  require('../../src/process')
+const {webhook} =  require('../../src/process')
 
 var I18n = {
   init({bundles, defaultCurrency}) {
@@ -24,19 +24,18 @@ var I18n = {
       return I18n._buildMessage(translationString, ...localizedValues);
     }
     const {MessageEmbed, WebhookClient } = require('discord.js');
-    const webhookClient = new WebhookClient(webh.id, webhtoken);
+    const webhookClient = new WebhookClient(webhook.id, webhook.token);
     const embed = new MessageEmbed()
       .setTitle('Error translate')
-      .setAuthor("Noémie", webhurl)
+      .setAuthor("Noémie", webhook.url)
       .setColor('#ee3f3f')
-      .setDescription(`Missing translation key in \n${translationKey}`);
+      .setDescription(`Missing translation key in: \n${translationKey}`);
     webhookClient.send( {
       username: 'Noémie Translate error',
-      avatarURL: 'https://cdn.discordapp.com/attachments/433708828610134026/677930901803499544/NoemieBeta.png',
+      avatarURL: webhook.url,
       embeds: [embed],
     });
-
-    //console.log(`Missing translation key in ${module.parent.filename}:\n${translationKey}`)
+   // console.log(`Missing translation key in ${module.parent.filename}:\n${translationKey}`)
 
     return I18n._buildMessage(translationKey, ...values);
   },
