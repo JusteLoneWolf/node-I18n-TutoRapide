@@ -44,7 +44,7 @@
   "name": "node-i18n-webbhook",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eslachance/node-i18n.git"
+    "url": "git+https://github.com/TutoRapide/node-I18n-TutoRapide.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
