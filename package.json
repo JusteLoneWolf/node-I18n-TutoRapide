@@ -1,0 +1,53 @@
+{
+  "_from": "github:tutorapide/node-i18n-TutoRapide",
+  "_id": "node-i18n-webbhook@0.0.1",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/node-i18n-webbhook",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "github:tutorapide/node-i18n-TutoRapide",
+    "rawSpec": "github:tutorapide/node-i18n-TutoRapide",
+    "saveSpec": "github:tutorapide/node-i18n-TutoRapide",
+    "fetchSpec": null,
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "github:tutorapide/node-i18n-TutoRapide#1d8a48746fbd3021af2a91618e791185ecd5235a",
+  "_spec": "github:tutorapide/node-i18n-TutoRapide",
+  "_where": "C:\\Users\\Samuel\\Desktop\\Noe-V2",
+  "author": {
+    "name": "Évelyne Lachance ==> Modify by Samuel-TutoRapide"
+  },
+  "bugs": {
+    "url": "https://github.com/eslachance/node-i18n/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "discord.js": "^12.0.1"
+  },
+  "deprecated": false,
+  "description": "Internationalization module using ES6 Template Literals and JSON localization files.",
+  "homepage": "https://github.com/eslachance/node-i18n#readme",
+  "keywords": [
+    "i18n",
+    "localization",
+    "internationalization",
+    "translation"
+  ],
+  "license": "MIT",
+  "main": "app.js",
+  "name": "node-i18n-webbhook",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eslachance/node-i18n.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.0.1"
+}
